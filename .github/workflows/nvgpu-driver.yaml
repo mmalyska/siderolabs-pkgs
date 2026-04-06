@@ -1,10 +1,10 @@
 ---
-# Custom CI for jetson-nvgpu-pkg — uses GitHub-hosted arm64 runners
+# Custom CI for nvgpu-driver-pkg — uses GitHub-hosted arm64 runners
 # because the upstream private BuildKit fleet is not available in this fork.
 #
 # Triggers: push/PR on feat/jetson-nvgpu or main; manual dispatch.
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}-jetson-nvgpu
+  group: ${{ github.head_ref || github.run_id }}-nvgpu-driver
   cancel-in-progress: true
 
 "on":
@@ -20,7 +20,7 @@ concurrency:
       - feat/jetson-nvgpu
   workflow_dispatch: {}
 
-name: jetson-nvgpu
+name: nvgpu-driver
 
 jobs:
   build:
@@ -48,7 +48,7 @@ jobs:
       - name: Build (PR — no push)
         if: github.event_name == 'pull_request'
         run: |
-          make jetson-nvgpu-pkg \
+          make nvgpu-driver \
             PLATFORM=linux/arm64 \
             REGISTRY=ghcr.io \
             USERNAME=${{ github.repository_owner }}
@@ -56,7 +56,7 @@ jobs:
       - name: Build and push
         if: github.event_name != 'pull_request'
         run: |
-          make jetson-nvgpu-pkg \
+          make nvgpu-driver \
             PLATFORM=linux/arm64 \
             REGISTRY=ghcr.io \
             USERNAME=${{ github.repository_owner }} \
