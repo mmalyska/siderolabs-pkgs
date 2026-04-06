@@ -105,6 +105,7 @@ TARGETS += zstd
 TARGETS += kernel
 TARGETS += drbd-pkg
 TARGETS += ena-pkg
+TARGETS += jetson-nvgpu-pkg
 TARGETS += gasket-driver-pkg
 TARGETS += hailort-pkg
 TARGETS += mellanox-mstflint-pkg

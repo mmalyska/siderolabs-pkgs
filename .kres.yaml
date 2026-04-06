@@ -63,6 +63,7 @@ spec:
     - kernel
     - drbd-pkg
     - ena-pkg
+    - jetson-nvgpu-pkg
     - gasket-driver-pkg
     - hailort-pkg
     - mellanox-mstflint-pkg

@@ -1,0 +1,54 @@
+name: jetson-nvgpu-pkg
+variant: scratch
+shell: /bin/bash
+dependencies:
+  - stage: base
+  - stage: kernel-build
+  - image: "{{ .LLVM_IMAGE }}:{{ .TOOLS_REV }}"
+steps:
+  - sources:
+      - url: https://github.com/OE4T/linux-nvgpu/archive/{{ .jetson_nvgpu_ref }}.tar.gz
+        destination: nvgpu.tar.gz
+        sha256: "{{ .jetson_nvgpu_sha256 }}"
+        sha512: "{{ .jetson_nvgpu_sha512 }}"
+    env:
+      ARCH: {{ if eq .ARCH "aarch64"}}arm64{{ else if eq .ARCH "x86_64" }}x86_64{{ else }}unsupported{{ end }}
+      LLVM: 1
+    prepare:
+      - |
+        mkdir -p /nvgpu
+        tar -xzf nvgpu.tar.gz -C /nvgpu --strip-components=1
+      - |
+        # Stub L4T-only source files that pull in BSP-only headers
+        git -C /nvgpu apply /pkg/files/nvgpu-kernel-compat.patch
+    build:
+      - |
+        make -j $(nproc) -C /nvgpu \
+          KDIR=/src \
+          ARCH=${ARCH} \
+          LLVM=1 \
+          KCPPFLAGS="-include /pkg/files/nv_compat.h" \
+          NV_BUILD_KERNEL_INTERFACE=yes \
+          modules
+    install:
+      - |
+        KRELEASE=$(cat /src/include/config/kernel.release)
+        mkdir -p /rootfs/usr/lib/modules/${KRELEASE}/
+
+        cp /src/modules.order /rootfs/usr/lib/modules/${KRELEASE}/
+        cp /src/modules.builtin /rootfs/usr/lib/modules/${KRELEASE}/
+        cp /src/modules.builtin.modinfo /rootfs/usr/lib/modules/${KRELEASE}/
+
+        make -C /src M=/nvgpu/drivers/gpu/nvgpu modules_install \
+          INSTALL_MOD_PATH=/rootfs/usr \
+          INSTALL_MOD_DIR=extras \
+          INSTALL_MOD_STRIP=1
+    test:
+      - |
+        # https://www.kernel.org/doc/html/v4.15/admin-guide/module-signing.html#signed-modules-and-stripping
+        find /rootfs/usr/lib/modules -name '*.ko' -exec grep -FL '~Module signature appended~' {} \+
+      - |
+        fhs-validator /rootfs
+finalize:
+  - from: /rootfs
+    to: /
