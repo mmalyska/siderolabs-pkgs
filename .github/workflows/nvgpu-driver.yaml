@@ -51,7 +51,8 @@ jobs:
           make nvgpu-driver-pkg \
             PLATFORM=linux/arm64 \
             REGISTRY=ghcr.io \
-            USERNAME=${{ github.repository_owner }}
+            USERNAME=${{ github.repository_owner }} \
+            CI_ARGS="--cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache"
 
       - name: Build and push
         if: github.event_name != 'pull_request'
@@ -60,4 +61,5 @@ jobs:
             PLATFORM=linux/arm64 \
             REGISTRY=ghcr.io \
             USERNAME=${{ github.repository_owner }} \
-            PUSH=true
+            PUSH=true \
+            CI_ARGS="--cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache --cache-to type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache,mode=max"
