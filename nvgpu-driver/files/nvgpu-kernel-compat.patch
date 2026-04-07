@@ -1203,3 +1203,15 @@ index 294f01f..622247d 100644
 -	return ipa;
 -}
 +/* stub: L4T-only header not available on vanilla kernel — see nvgpu-kernel-compat.patch. */
+diff --git a/drivers/gpu/nvgpu/Makefile b/drivers/gpu/nvgpu/Makefile
+index 1234567..abcdefg 100644
+--- a/drivers/gpu/nvgpu/Makefile
++++ b/drivers/gpu/nvgpu/Makefile
+@@ -20,7 +20,6 @@ ccflags-y += -I$(srctree)/drivers/devfreq
+ ccflags-y += $(call cc-option, -Wimplicit-fallthrough=3)
+ ccflags-y += -Wframe-larger-than=2048
+ ccflags-y += -Wno-multichar
+-ccflags-y += -Werror
+ ccflags-y += -Wno-error=cpp
+ ccflags-y += -Wmissing-prototypes
+ ifeq ($(VERSION),4)

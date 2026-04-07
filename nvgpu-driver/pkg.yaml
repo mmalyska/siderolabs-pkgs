@@ -28,7 +28,6 @@ steps:
           ARCH=${ARCH} \
           LLVM=1 \
           KCPPFLAGS="-include /pkg/files/nv_compat.h" \
-          KCFLAGS="-Wno-implicit-fallthrough -Wno-parentheses-equality -Wno-sometimes-uninitialized" \
           NV_BUILD_KERNEL_INTERFACE=yes \
           modules
     install:
