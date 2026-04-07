@@ -201,7 +201,7 @@ diff --git a/drivers/gpu/nvgpu/os/linux/platform_ga10b_tegra.c b/drivers/gpu/nvg
 index 8f1d235..622247d 100644
 --- a/drivers/gpu/nvgpu/os/linux/platform_ga10b_tegra.c
 +++ b/drivers/gpu/nvgpu/os/linux/platform_ga10b_tegra.c
-@@ -1,847 +1,14 @@
+@@ -1,847 +1,24 @@
 -// SPDX-License-Identifier: GPL-2.0-only
 -// SPDX-FileCopyrightText: Copyright (c) 2016-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 -
@@ -1055,14 +1055,24 @@ index 8f1d235..622247d 100644
 +#include "os/linux/platform_gk20a.h"
 +
 +/*
-+ * tegra_vpr_dev: L4T BSP video-protect-region device referenced by
-+ * platform_gk20a_tegra.c. Define here so the module link succeeds on
-+ * vanilla kernels -- the device is not used at runtime without L4T BSP.
++ * tegra_vpr_dev: L4T BSP VPR device referenced as extern in
++ * platform_gk20a_tegra.c. Defined here for symbol resolution only;
++ * not used at runtime without L4T BSP (secure video path only).
 + */
 +struct device tegra_vpr_dev;
 +
-+/* GA10B Tegra platform data -- L4T-specific, unused on vanilla kernel */
-+struct gk20a_platform ga10b_tegra_platform = { 0 };
++/*
++ * ga10b_tegra_platform: platform callbacks called unconditionally by
++ * driver_common.c (probe) and module.c (is_railgated). Stub the two
++ * required ones; all others are NULL-guarded by the caller.
++ */
++static int ga10b_tegra_probe_stub(struct device *dev) { return 0; }
++static bool ga10b_is_railgated_stub(struct device *dev) { return false; }
++
++struct gk20a_platform ga10b_tegra_platform = {
++	.probe = ga10b_tegra_probe_stub,
++	.is_railgated = ga10b_is_railgated_stub,
++};
 diff --git a/drivers/gpu/nvgpu/os/linux/soc.c b/drivers/gpu/nvgpu/os/linux/soc.c
 index 294f01f..622247d 100644
 --- a/drivers/gpu/nvgpu/os/linux/soc.c
