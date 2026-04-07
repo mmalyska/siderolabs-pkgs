@@ -23,8 +23,8 @@ steps:
         git -C /nvgpu apply /pkg/files/nvgpu-kernel-compat.patch
     build:
       - |
-        make -j $(nproc) -C /nvgpu \
-          KDIR=/src \
+        make -j $(nproc) -C /src \
+          M=/nvgpu/drivers/gpu/nvgpu \
           ARCH=${ARCH} \
           LLVM=1 \
           KCPPFLAGS="-include /pkg/files/nv_compat.h" \
