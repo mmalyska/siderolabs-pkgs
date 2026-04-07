@@ -2,7 +2,7 @@ diff --git a/drivers/gpu/nvgpu/common/cbc/contig_pool.c b/drivers/gpu/nvgpu/comm
 index 1392245..622247d 100644
 --- a/drivers/gpu/nvgpu/common/cbc/contig_pool.c
 +++ b/drivers/gpu/nvgpu/common/cbc/contig_pool.c
-@@ -1,119 +1 @@
+@@ -1,119 +1,12 @@
 -/*
 - * Copyright (c) 2022, NVIDIA CORPORATION.  All rights reserved.
 - *
@@ -122,7 +122,18 @@ index 1392245..622247d 100644
 -			sizeof(struct compbit_store_desc));
 -}
 -
-+/* stub: L4T-only header not available on vanilla kernel — see nvgpu-kernel-compat.patch. */
++/* SPDX-License-Identifier: GPL-2.0-only */
++/* stub: L4T IVC-based contig pool not used on vanilla kernel */
++#include <nvgpu/gk20a.h>
++
++int nvgpu_cbc_contig_init(struct gk20a *g)
++{
++	return 0;
++}
++
++void nvgpu_cbc_contig_deinit(struct gk20a *g)
++{
++}
 diff --git a/drivers/gpu/nvgpu/os/linux/nvgpu_ivm.c b/drivers/gpu/nvgpu/os/linux/nvgpu_ivm.c
 index 1de7229..622247d 100644
 --- a/drivers/gpu/nvgpu/os/linux/nvgpu_ivm.c
@@ -190,7 +201,7 @@ diff --git a/drivers/gpu/nvgpu/os/linux/platform_ga10b_tegra.c b/drivers/gpu/nvg
 index 8f1d235..622247d 100644
 --- a/drivers/gpu/nvgpu/os/linux/platform_ga10b_tegra.c
 +++ b/drivers/gpu/nvgpu/os/linux/platform_ga10b_tegra.c
-@@ -1,847 +1 @@
+@@ -1,847 +1,14 @@
 -// SPDX-License-Identifier: GPL-2.0-only
 -// SPDX-FileCopyrightText: Copyright (c) 2016-2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 -
@@ -1038,7 +1049,20 @@ index 8f1d235..622247d 100644
 -	 */
 -	.secure_buffer_size = 0x400000, /* 4 MB */
 -};
-+/* stub: L4T-only header not available on vanilla kernel — see nvgpu-kernel-compat.patch. */
++/* SPDX-License-Identifier: GPL-2.0-only */
++/* stub: L4T BSP platform data not used on vanilla kernel */
++#include <linux/device.h>
++#include "os/linux/platform_gk20a.h"
++
++/*
++ * tegra_vpr_dev: L4T BSP video-protect-region device referenced by
++ * platform_gk20a_tegra.c. Define here so the module link succeeds on
++ * vanilla kernels -- the device is not used at runtime without L4T BSP.
++ */
++struct device tegra_vpr_dev;
++
++/* GA10B Tegra platform data -- L4T-specific, unused on vanilla kernel */
++struct gk20a_platform ga10b_tegra_platform = { 0 };
 diff --git a/drivers/gpu/nvgpu/os/linux/soc.c b/drivers/gpu/nvgpu/os/linux/soc.c
 index 294f01f..622247d 100644
 --- a/drivers/gpu/nvgpu/os/linux/soc.c
