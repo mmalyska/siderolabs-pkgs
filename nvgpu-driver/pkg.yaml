@@ -4,7 +4,6 @@ shell: /bin/bash
 dependencies:
   - stage: base
   - stage: kernel-build
-  - image: "{{ .LLVM_IMAGE }}:{{ .TOOLS_REV }}"
 steps:
   - sources:
       - url: https://github.com/OE4T/linux-nvgpu/archive/{{ .jetson_nvgpu_ref }}.tar.gz
