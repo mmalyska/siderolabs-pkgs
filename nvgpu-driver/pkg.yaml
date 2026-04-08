@@ -39,7 +39,8 @@ steps:
         make -C /src M=/nvgpu/drivers/gpu/nvgpu modules_install \
           INSTALL_MOD_PATH=/rootfs/usr \
           INSTALL_MOD_DIR=extras \
-          INSTALL_MOD_STRIP=1
+          INSTALL_MOD_STRIP=1 \
+          CONFIG_MODULE_SIG_ALL=y
     test:
       - |
         # https://www.kernel.org/doc/html/v4.15/admin-guide/module-signing.html#signed-modules-and-stripping
