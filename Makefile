@@ -253,3 +253,8 @@ conformance:
 	@docker pull $(CONFORMANCE_IMAGE)
 	@docker run --rm -it -v $(PWD):/src -w /src $(CONFORMANCE_IMAGE) enforce
 
+# Fork-custom: build kernel bldr stage, push as talos-kernel (nvgpu signing key consistency)
+.PHONY: talos-kernel
+talos-kernel:
+	@$(MAKE) docker-kernel TARGET_ARGS="--tag=$(REGISTRY_AND_USERNAME)/talos-kernel:$(TAG) --push=$(PUSH)"
+
