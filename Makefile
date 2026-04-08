@@ -105,10 +105,10 @@ TARGETS += zstd
 TARGETS += kernel
 TARGETS += drbd-pkg
 TARGETS += ena-pkg
-TARGETS += nvgpu-driver-pkg
 TARGETS += gasket-driver-pkg
 TARGETS += hailort-pkg
 TARGETS += mellanox-mstflint-pkg
+TARGETS += nvgpu-driver-pkg 
 TARGETS += nvidia-open-gpu-kernel-modules-lts-pkg
 TARGETS += nvidia-open-gpu-kernel-modules-production-pkg
 TARGETS += tenstorrent-pkg
@@ -252,9 +252,3 @@ release-notes: $(ARTIFACTS)
 conformance:
 	@docker pull $(CONFORMANCE_IMAGE)
 	@docker run --rm -it -v $(PWD):/src -w /src $(CONFORMANCE_IMAGE) enforce
-
-# Fork-custom: build kernel bldr stage, push as talos-kernel (nvgpu signing key consistency)
-.PHONY: talos-kernel
-talos-kernel:
-	@$(MAKE) docker-kernel TARGET_ARGS="--tag=$(REGISTRY_AND_USERNAME)/talos-kernel:$(TAG) --push=$(PUSH)"
-

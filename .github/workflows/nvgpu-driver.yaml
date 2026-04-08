@@ -48,7 +48,7 @@ jobs:
       - name: Build (PR — no push)
         if: github.event_name == 'pull_request'
         run: |
-          make nvgpu-driver-pkg \
+          make kernel nvgpu-driver-pkg \
             PLATFORM=linux/arm64 \
             REGISTRY=ghcr.io \
             USERNAME=${{ github.repository_owner }} \
@@ -57,21 +57,9 @@ jobs:
       - name: Build and push
         if: github.event_name != 'pull_request'
         run: |
-          make nvgpu-driver-pkg \
+          make kernel nvgpu-driver-pkg \
             PLATFORM=linux/arm64 \
             REGISTRY=ghcr.io \
             USERNAME=${{ github.repository_owner }} \
             PUSH=true \
             CI_ARGS="--cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache --cache-to type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache,mode=max"
-
-      - name: Build and push talos-kernel
-        if: github.event_name != 'pull_request'
-        run: |
-          # kernel-build is already cached in the local BuildKit daemon from the step above.
-          # talos-kernel reuses that cache → same signing key M as nvgpu modules.
-          make talos-kernel \
-            PLATFORM=linux/arm64 \
-            REGISTRY=ghcr.io \
-            USERNAME=${{ github.repository_owner }} \
-            PUSH=true \
-            CI_ARGS="--cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache"
