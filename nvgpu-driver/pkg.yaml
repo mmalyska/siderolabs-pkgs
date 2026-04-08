@@ -12,7 +12,6 @@ steps:
         sha512: "{{ .jetson_nvgpu_sha512 }}"
     env:
       ARCH: {{ if eq .ARCH "aarch64"}}arm64{{ else if eq .ARCH "x86_64" }}x86_64{{ else }}unsupported{{ end }}
-      LLVM: 1
     prepare:
       - |
         mkdir -p /nvgpu
@@ -25,7 +24,6 @@ steps:
         make -j $(nproc) -C /src \
           M=/nvgpu/drivers/gpu/nvgpu \
           ARCH=${ARCH} \
-          LLVM=1 \
           KCPPFLAGS="-include /pkg/files/nv_compat.h" \
           NV_BUILD_KERNEL_INTERFACE=yes \
           modules
