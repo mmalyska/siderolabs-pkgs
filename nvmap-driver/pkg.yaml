@@ -1,0 +1,55 @@
+name: nvmap-driver-pkg
+variant: scratch
+shell: /bin/bash
+dependencies:
+  - stage: base
+  - stage: kernel-build
+steps:
+  - sources:
+      - url: https://github.com/OE4T/linux-nv-oot/archive/{{ .jetson_nvmap_ref }}.tar.gz
+        destination: nv-oot.tar.gz
+        sha256: "{{ .jetson_nvmap_sha256 }}"
+        sha512: "{{ .jetson_nvmap_sha512 }}"
+    env:
+      ARCH: {{ if eq .ARCH "aarch64"}}arm64{{ else if eq .ARCH "x86_64" }}x86_64{{ else }}unsupported{{ end }}
+    prepare:
+      - |
+        mkdir -p /nv-oot
+        tar -xzf nv-oot.tar.gz -C /nv-oot --strip-components=1
+      - |
+        # Set up conftest headers (mirrors nvidia-kernel-oot Makefile conftest step)
+        mkdir -p /conftest/nvidia
+        cp /nv-oot/scripts/conftest/* /conftest/nvidia/
+    build:
+      - |
+        make -j $(nproc) -C /src \
+          M=/nv-oot/drivers/video/tegra/nvmap \
+          ARCH=${ARCH} \
+          CONFIG_ARCH_TEGRA=y \
+          CONFIG_TEGRA_OOT_MODULE=m \
+          "srctree.nvidia-oot=/nv-oot" \
+          "srctree.nvconftest=/conftest" \
+          KCPPFLAGS="-I/nv-oot/include -I/conftest" \
+          modules
+    install:
+      - |
+        KRELEASE=$(cat /src/include/config/kernel.release)
+        mkdir -p /rootfs/usr/lib/modules/${KRELEASE}/
+
+        cp /src/modules.order /rootfs/usr/lib/modules/${KRELEASE}/
+        cp /src/modules.builtin /rootfs/usr/lib/modules/${KRELEASE}/
+        cp /src/modules.builtin.modinfo /rootfs/usr/lib/modules/${KRELEASE}/
+
+        make -C /src M=/nv-oot/drivers/video/tegra/nvmap modules_install \
+          INSTALL_MOD_PATH=/rootfs/usr \
+          INSTALL_MOD_DIR=extras \
+          INSTALL_MOD_STRIP=1 \
+          CONFIG_MODULE_SIG_ALL=y
+    test:
+      - |
+        find /rootfs/usr/lib/modules -name '*.ko' -exec grep -FL '~Module signature appended~' {} \+
+      - |
+        fhs-validator /rootfs
+finalize:
+  - from: /rootfs
+    to: /

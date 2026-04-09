@@ -196,6 +196,11 @@ vars:
   jetson_nvgpu_sha256: adc5864edf76d986866e386803a9e628ee229e69ea34867b92b978a0b44f3d54
   jetson_nvgpu_sha512: a7c7f0b5d3174bf41abc77c77009f46182358f93936aedbe4993e63ff7fc94e21bfd83c3fa0b41af5836866b9c200427504d8f26685d567c11722e7a7bfd3ed9
 
+  # renovate: datasource=git-refs versioning=git depName=https://github.com/OE4T/linux-nv-oot.git
+  jetson_nvmap_ref: ea32e7f97dd04c3f75aadc22424dc63568387120
+  jetson_nvmap_sha256: 9d2d70a121a418be307e3d1cd3c74d9ae9398e7abc756304d614e998dfd6f342
+  jetson_nvmap_sha512: 5645163e964bfb13d7aa2ee1749188fe40a1fe9012080f548548f7dc70e4397a762c161041d8d209d2cd969cbb4aab36ea5c560ef5967946eeb3f1dd16335b9c
+
   # this tools doesn't have a git repo at all
   mtools_version: 4.0.47
   mtools_sha256: e0111d863f9ef55715582f4b69a7ffd261645e0c89417cefeb308cd080002e04
