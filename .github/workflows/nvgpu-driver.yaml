@@ -1,6 +1,8 @@
 ---
-# Custom CI for nvgpu-driver-pkg — uses GitHub-hosted arm64 runners
+# Custom CI for nvgpu-driver-pkg and nvmap-driver-pkg — uses GitHub-hosted arm64 runners
 # because the upstream private BuildKit fleet is not available in this fork.
+# Both packages share the kernel-build stage; building them in one job avoids
+# building the kernel twice.
 #
 # Triggers: push/PR on feat/jetson-nvgpu or main; manual dispatch.
 concurrency:
@@ -48,7 +50,7 @@ jobs:
       - name: Build (PR — no push)
         if: github.event_name == 'pull_request'
         run: |
-          make kernel nvgpu-driver-pkg \
+          make kernel nvgpu-driver-pkg nvmap-driver-pkg \
             PLATFORM=linux/arm64 \
             REGISTRY=ghcr.io \
             USERNAME=${{ github.repository_owner }} \
@@ -57,9 +59,10 @@ jobs:
       - name: Build and push
         if: github.event_name != 'pull_request'
         run: |
-          make kernel nvgpu-driver-pkg \
+          make kernel nvgpu-driver-pkg nvmap-driver-pkg \
             PLATFORM=linux/arm64 \
             REGISTRY=ghcr.io \
             USERNAME=${{ github.repository_owner }} \
             PUSH=true \
-            CI_ARGS="--cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache --cache-to type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache,mode=max"
+            CI_ARGS="--cache-from type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache \
+                     --cache-to type=registry,ref=ghcr.io/${{ github.repository_owner }}/nvgpu-driver-pkg:buildcache,mode=max"
