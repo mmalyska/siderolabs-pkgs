@@ -45,6 +45,7 @@ steps:
           "srctree.nvidia-oot=/nv-oot" \
           "srctree.nvconftest=/conftest" \
           KCPPFLAGS="-I/nv-oot/include -I/conftest" \
+          KCFLAGS="-Wno-missing-prototypes" \
           NVMAP_CONFIG_SCIIPC=n \
           modules
     install:
