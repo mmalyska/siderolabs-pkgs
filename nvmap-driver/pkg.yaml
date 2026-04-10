@@ -30,7 +30,8 @@ steps:
           src=/nv-oot/scripts/conftest \
           obj=/conftest \
           CC=gcc \
-          LD=ld
+          LD=ld \
+          EXTRA_CFLAGS="-I/conftest"
         cp /nv-oot/scripts/conftest/conftest.h /conftest/nvidia/conftest.h
     build:
       - |
