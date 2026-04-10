@@ -94,10 +94,11 @@
 #define NV_LINUX_IOSYS_MAP_H_PRESENT
 
 /*
- * Linux v5.15+: dma_buf_ops has a cache_sgt_mapping boolean field indicating
- * whether the exporter caches the sg_table between map/unmap calls.
+ * NV_DMA_BUF_OPS_HAS_CACHE_SGT_MAPPING: intentionally NOT defined.
+ *
+ * dma_buf_ops.cache_sgt_mapping was added in Linux 5.15 but removed again
+ * before 6.18 — the field no longer exists in the struct.
  */
-#define NV_DMA_BUF_OPS_HAS_CACHE_SGT_MAPPING
 
 /*
  * NV_MODULE_IMPORT_NS_CALLS_STRINGIFY: intentionally NOT defined.
