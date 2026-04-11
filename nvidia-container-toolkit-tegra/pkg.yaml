@@ -30,13 +30,17 @@ steps:
         mkdir -p /rootfs/usr/local/bin
         cd /container-toolkit
         # Install all built binaries — nvidia-container-runtime, nvidia-container-runtime-hook,
-        # nvidia-container-runtime.cdi, nvidia-container-runtime.legacy, nvidia-ctk
+        # nvidia-container-runtime.cdi, nvidia-container-runtime.legacy, nvidia-ctk, nvidia-ctk-installer
+        # The Makefile places binaries in the project root after 'make cmds'
         find . -maxdepth 1 -type f -executable -exec cp {} /rootfs/usr/local/bin/ \;
+        # Verify at least one key binary landed
+        ls -la /rootfs/usr/local/bin/nvidia-container-runtime
     test:
       - |
-        # Verify key binaries are present and have the right architecture
-        file /rootfs/usr/local/bin/nvidia-container-runtime
-        /rootfs/usr/local/bin/nvidia-container-runtime --version || true
+        # Verify key binaries are present
+        ls -la /rootfs/usr/local/bin/nvidia-container-runtime
+        ls -la /rootfs/usr/local/bin/nvidia-ctk
+        /rootfs/usr/local/bin/nvidia-container-runtime --version 2>&1 || true
 finalize:
   - from: /rootfs
     to: /
