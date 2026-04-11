@@ -191,6 +191,15 @@ vars:
   mellanox_ofed_sha256: 4503258cbe92b00c734e612c3a7ad1d71e023fdffae2a2c119f7b537505e499c
   mellanox_ofed_sha512: 58604ea89aa8351727532c48f0c59b4e533ba8bfcef9533f45d94e15ffdcf3a5c464398706cad14ebf3826b132972bd044fadbf7f047e60bdb0c2a454c96acd7
 
+  # renovate: datasource=docker versioning=docker depName=cgr.dev/chainguard/wolfi-base
+  WOLFI_BASE_REF: sha256:2a43204178a08b8c7f5e881c550bb52733364beff904ed36eeabe33cc656c749
+
+  # renovate: datasource=github-releases depName=nvidia/nvidia-container-toolkit
+  nvidia_container_toolkit_version: v1.19.0
+  nvidia_container_toolkit_ref: ec7b4e2fa2caecad6d89be4a26029b831fe7503a
+  nvidia_container_toolkit_sha256: 8c5f8567671167fff208e8fca72b3e864b62bf7e89711f01aaa64b25765fe42e
+  nvidia_container_toolkit_sha512: 5d7b08af43ec8e82f2dc1c1ff1eb5eb9451cbe69add6d58d721d59b5da35d008eaa37463d615ae742b50d4e9e12ad6e02dd3d5eb03b83cc8717b18fa7f5b12b9
+
   # renovate: datasource=git-refs versioning=git depName=https://github.com/OE4T/linux-nvgpu.git
   # tracking branch: patches-r36.5 (mirror of nv-tegra.nvidia.com/linux-nvgpu.git)
   jetson_nvgpu_ref: d530a48d64f9ad3020d9f3307f53e8dde8e3fba1

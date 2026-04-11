@@ -108,6 +108,7 @@ TARGETS += ena-pkg
 TARGETS += gasket-driver-pkg
 TARGETS += hailort-pkg
 TARGETS += mellanox-mstflint-pkg
+TARGETS += nvidia-container-toolkit-tegra-pkg
 TARGETS += nvgpu-driver-pkg
 TARGETS += nvmap-driver-pkg
 TARGETS += nvidia-open-gpu-kernel-modules-lts-pkg

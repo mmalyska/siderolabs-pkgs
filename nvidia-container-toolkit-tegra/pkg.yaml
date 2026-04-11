@@ -1,0 +1,42 @@
+name: nvidia-container-toolkit-tegra-pkg
+variant: scratch
+shell: /bin/bash
+install:
+  - build-base
+  - gcc
+  - bash
+  - go
+dependencies:
+  - image: cgr.dev/chainguard/wolfi-base@{{ .WOLFI_BASE_REF }}
+steps:
+  - sources:
+      - url: https://github.com/NVIDIA/nvidia-container-toolkit/archive/refs/tags/{{ .nvidia_container_toolkit_version }}.tar.gz
+        destination: container-toolkit.tar.gz
+        sha256: "{{ .nvidia_container_toolkit_sha256 }}"
+        sha512: "{{ .nvidia_container_toolkit_sha512 }}"
+    env:
+      # Short sha for embedding in binary version string
+      GIT_COMMIT: "{{ substr 0 7 .nvidia_container_toolkit_ref }}"
+    prepare:
+      - |
+        mkdir -p /container-toolkit
+        tar -xzf container-toolkit.tar.gz --strip-components=1 -C /container-toolkit
+    build:
+      - |
+        cd /container-toolkit
+        make cmds
+    install:
+      - |
+        mkdir -p /rootfs/usr/local/bin
+        cd /container-toolkit
+        # Install all built binaries — nvidia-container-runtime, nvidia-container-runtime-hook,
+        # nvidia-container-runtime.cdi, nvidia-container-runtime.legacy, nvidia-ctk
+        find . -maxdepth 1 -type f -executable -exec cp {} /rootfs/usr/local/bin/ \;
+    test:
+      - |
+        # Verify key binaries are present and have the right architecture
+        file /rootfs/usr/local/bin/nvidia-container-runtime
+        /rootfs/usr/local/bin/nvidia-container-runtime --version || true
+finalize:
+  - from: /rootfs
+    to: /
