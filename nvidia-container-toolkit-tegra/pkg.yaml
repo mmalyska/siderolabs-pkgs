@@ -23,8 +23,10 @@ steps:
         tar -xzf container-toolkit.tar.gz --strip-components=1 -C /container-toolkit
     build:
       - |
+        # CGO_ENABLED=0 produces fully static binaries — required because Talos's
+        # pod-containerd root has no glibc dynamic linker (/lib/ld-linux-aarch64.so.1).
         cd /container-toolkit
-        make cmds
+        CGO_ENABLED=0 make cmds
     install:
       - |
         mkdir -p /rootfs/usr/local/bin
