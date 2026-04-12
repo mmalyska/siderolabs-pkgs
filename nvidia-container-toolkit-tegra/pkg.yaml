@@ -25,8 +25,16 @@ steps:
       - |
         # CGO_ENABLED=0 produces fully static binaries — required because Talos's
         # pod-containerd root has no glibc dynamic linker (/lib/ld-linux-aarch64.so.1).
+        # Build only Tegra-relevant commands: nvidia-cdi-hook is excluded because it
+        # transitively imports go-nvml/pkg/dl (NVML dynamic loader, CGO-only) which
+        # is not needed for Tegra CSV-based device discovery.
         cd /container-toolkit
-        CGO_ENABLED=0 make cmds
+        CGO_ENABLED=0 make \
+          cmd-nvidia-container-runtime \
+          cmd-nvidia-container-runtime-hook \
+          cmd-nvidia-container-runtime.cdi \
+          cmd-nvidia-container-runtime.legacy \
+          cmd-nvidia-ctk
     install:
       - |
         mkdir -p /rootfs/usr/local/bin
