@@ -23,13 +23,15 @@ steps:
         tar -xzf container-toolkit.tar.gz --strip-components=1 -C /container-toolkit
     build:
       - |
-        # CGO_ENABLED=0 produces fully static binaries — required because Talos's
-        # pod-containerd root has no glibc dynamic linker (/lib/ld-linux-aarch64.so.1).
-        # Build only Tegra-relevant commands: nvidia-cdi-hook is excluded because it
-        # transitively imports go-nvml/pkg/dl (NVML dynamic loader, CGO-only) which
-        # is not needed for Tegra CSV-based device discovery.
+        # CGO is required — go-nvml/pkg/dl and internal/cuda are CGO-only packages
+        # (build constraints exclude all Go files when CGO_ENABLED=0).
+        # Override EXTLDFLAGS with -static so the Makefile produces fully static binaries.
+        # Talos has no glibc dynamic linker (/lib/ld-linux-aarch64.so.1) so dynamic
+        # binaries won't run. Static linking bakes in libdl, which can still lazy-load
+        # libnvidia-ml.so at runtime (not required for Tegra CSV-based device discovery).
+        # nvidia-cdi-hook is excluded — it imports go-nvml CDI hooks not needed for CSV mode.
         cd /container-toolkit
-        CGO_ENABLED=0 make \
+        make EXTLDFLAGS="-static" \
           cmd-nvidia-container-runtime \
           cmd-nvidia-container-runtime-hook \
           cmd-nvidia-container-runtime.cdi \
